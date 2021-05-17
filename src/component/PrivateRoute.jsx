@@ -1,9 +1,10 @@
 import { Redirect, Route } from "react-router-dom";
 import useAuth from "../hook/useAuth";
-
-export default function PrivateRoute(prop){
-    let {login} = useAuth()
-    if(!login){
+import { useSelector } from "react-redux";
+export function PrivateRoute(prop) {
+    let { login } = useSelector(store => store.auth)
+    // let {login} = useAuth()
+    if (!login) {
         setTimeout(() => {
             document.querySelector('.popup-login').style.display = 'flex'
         }, 0)
@@ -12,6 +13,6 @@ export default function PrivateRoute(prop){
         </Route>
     }
 
-    return <Route {...prop}/>
+    return <Route {...prop} />
 
 }

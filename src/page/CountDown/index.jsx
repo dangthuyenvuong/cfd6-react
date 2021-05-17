@@ -1,32 +1,29 @@
 import { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 
-export default function  CountDown(){
-    let [count, setCount] = useState(100)
-    useEffect(() => {
-        let title = document.title
-        document.title = 'demo'
-        console.log('constructor')
-        return () => {
-            document.title = title
-        }
-    }, [])
+export default function CountDown() {
 
-    useEffect(() => {
-        // console.log('aaa')
-        setTimeout(() => {
-            setCount(count - 1)
-        }, 1000)
+    let dispatch = useDispatch()
+    const state = useSelector(state => state.count)
 
-        return () => {
-            // console.log('callback ')
-        }
-    }, [count])
+    function _handleIncrement() {
+        dispatch({
+            type: 'INCREMENT'
+        })
+    }
 
-    // console.log('render')
-
+    function _handleDerement() {
+        dispatch({
+            type: 'DECREMENT'
+        })
+    }
     return (
-        <div style={{margin: '200px auto', fontSize: 100}}>
-            {count} CountDown
+        <div style={{ margin: '200px auto', fontSize: 100 }}>
+            {state.count} CountDown <br />
+            <br /><br /><br />
+            <button style={{fontSize: 50}} onClick={_handleIncrement}>+</button>
+            <button style={{fontSize: 50}} onClick={_handleDerement}>-</button>
+
         </div>
     )
 }

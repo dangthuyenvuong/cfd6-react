@@ -2,10 +2,12 @@ import React, { useContext, useState } from 'react'
 import reactDOM from 'react-dom'
 import useAuth from '../hook/useAuth'
 import useFormValidate from '../hook/useFormValidate'
+import { useSelector, useDispatch } from 'react-redux'
+import Auth from '../service/auth'
+import { loginAction } from '../redux/actions/authAction'
 
-export default function PopupLogin() {
-    let [loginError, setLoginError] = useState(null)
-    let {inputChange, check, error, form} = useFormValidate({
+export function PopupLogin() {
+    let { inputChange, check, error, form } = useFormValidate({
         username: '',
         password: ''
     }, {
@@ -22,28 +24,46 @@ export default function PopupLogin() {
         },
     })
 
-    let {handleLogin} = useAuth()
+    let dispatch = useDispatch()
 
-    function close(){
+    // let {handleLogin} = useAuth()
+
+    function close() {
         document.querySelector('.popup-login').style.display = 'none'
     }
 
+    let { loginError } = useSelector(store => store.auth)
 
 
-     async function loginHandle(){
+    async function loginHandle() {
         let error = check()
-        if(Object.keys(error).length === 0){
-            let res = await handleLogin(form.username, form.password)
-            
-            if(res.success){
-                close()
-            }else if(res.error){
-                setLoginError(res.error)
-            }
+        if (Object.keys(error).length === 0) {
+            // let res = await Auth.login({
+            //     username: form.username,
+            //     password: form.password
+            // })
+
+            dispatch(loginAction({
+                username: form.username,
+                password: form.password
+            }, close))
 
 
+            // if(res.data){
+            //     // dispatch(  {
+            //     //     type: 'LOGINN',
+            //     //     payload: res.data
+            //     // })
+
+            //     dispatch(loginAction(res.data))
+            //     close()
+            // }else if(res.error){
+            //     setLoginError(res.error)
+            // }
         }
     }
+
+
 
     return reactDOM.createPortal(
         <div className="popup-form popup-login" style={{ display: 'none' }}>
@@ -52,20 +72,20 @@ export default function PopupLogin() {
                 <div className="ct_login" style={{ display: 'block' }}>
                     <h2 className="title">Đăng nhập</h2>
                     {loginError && <p className="error-text">{loginError}</p>}
-                    <input value={form.username} name="username" onChange={inputChange} type="text" placeholder="Email / Số điện thoại"/>
+                    <input value={form.username} name="username" onChange={inputChange} type="text" placeholder="Email / Số điện thoại" />
                     {
                         error.username && <p className="error-text">{error.username}</p>
                     }
-                    <input value={form.password} name="password" onChange={inputChange} type="password" placeholder="Mật khẩu"/>
+                    <input value={form.password} name="password" onChange={inputChange} type="password" placeholder="Mật khẩu" />
                     {
                         error.password && <p className="error-text">{error.password}</p>
                     }
-                    
+
                     <div className="remember">
                         <label className="btn-remember">
                             <div>
                                 <input type="checkbox" />
-                               
+
                             </div>
                             <p>Nhớ mật khẩu</p>
                         </label>

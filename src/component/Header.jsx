@@ -1,22 +1,29 @@
 import { useContext, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import useAuth from '../hook/useAuth'
-
 import useDelayLink from '../hook/useDelayLink'
-
-
+import { useSelector, useDispatch } from 'react-redux'
+import { logoutAction } from '../redux/actions/authAction'
 
 export function Header({ }) {
     function menuToggle() {
         document.body.classList.toggle('menu-is-show')
     }
-
+    let dispatch = useDispatch()
     let delayLink = useDelayLink()
-    let { login, handleLogout } = useAuth()
+    let { login } = useSelector(store => store.auth)
+    // let { login, handleLogout } = useAuth()
 
-    function popupLogin(){
+
+    function popupLogin() {
         document.querySelector('.popup-login').style.display = 'flex'
     }
+
+    function logout(e){
+        e.preventDefault()
+        dispatch(logoutAction())
+    }
+
 
     return (
         <header id="header">
@@ -50,7 +57,7 @@ export function Header({ }) {
                                 <div className="sub">
                                     <Link to="/ca-nhan">Thong tin ca nhan</Link>
                                     <a href="#">Thông tin tài khoản</a>
-                                    <a href="#" onClick={e => { e.preventDefault(); handleLogout() }}>Đăng xuất</a>
+                                    <a href="#" onClick={logout}>Đăng xuất</a>
                                 </div>
                             </div>
                             :

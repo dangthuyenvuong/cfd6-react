@@ -7,8 +7,9 @@ import Coin from './component/Coin'
 
 import { Route, Switch, NavLink, useRouteMatch, Redirect } from 'react-router-dom'
 import TopInfo from './component/TopInfo'
+import { routerConfig } from '../../core'
 
-export default function Profile({}) {
+export default function Profile({children}) {
 
     let { path } = useRouteMatch()
 
@@ -27,6 +28,7 @@ export default function Profile({}) {
                             <NavLink to={`${path}/coin`}>Quản lý COIN của tôi</NavLink>
                         </div>
                         <div className="tab-content">
+                            {children}
                             <Switch>
                                 <Route path={`${path}/khoa-hoc-cua-ban`} component={MyCourse}/>
                                 <Route path={`${path}/du-an`} component={Project}/>

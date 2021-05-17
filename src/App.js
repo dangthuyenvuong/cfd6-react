@@ -1,31 +1,26 @@
-import React, { useEffect, useState, __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED } from 'react'
+import React, { useEffect, useState } from 'react'
 import './assets/style/custom.scss'
+import { Provider } from 'react-redux'
 
-import { Header, Footer, Nav } from './component'
-import { BrowserRouter, HashRouter, Switch, Route } from 'react-router-dom'
+import { BrowserRouter, Route } from 'react-router-dom'
 
-// import Header from './component/Header'
-// import Footer from './component/Footer'
-
+import Auth from './service/auth'
+import { routerConfig } from './core'
+import routers from './routers'
 import Home from './page/Home'
-import Team from './page/Team'
-import FAQ from './page/FAQ'
-import Contact from './page/Contact'
 import Profile from './page/Profile'
-import Page404 from './page/Page404'
+import Contact from './page/Contact'
+import FAQ from './page/FAQ'
 import ChiTietKhoaHoc from './page/ChiTietKhoaHoc'
 import CountDown from './page/CountDown'
-import PopupLogin from './component/PopupLogin'
-import PrivateRoute from './component/PrivateRoute'
-import Auth from './service/auth'
-
-Auth.update({
-  name: "Đặng Thuyền Vương"
-}).then(res => {
-  
-})
+import Page404 from './page/Page404'
+import { Footer, Nav, Header,  PrivateRoute, PopupLogin } from './component'
+import MainLayout from './layout/MainLayout'
+import { Switch } from 'react-router-dom'
+import store from './redux'
 
 export let Context = React.createContext({})
+
 
 function App() {
 
@@ -39,9 +34,9 @@ function App() {
 
   async function handleLogin(username, password) {
 
-    try{
+    try {
       let res = await Auth.login({ username, password })
-      
+
       if (res.data) {
         setState({
           ...state,
@@ -55,46 +50,9 @@ function App() {
           error: res.error
         }
       }
-
-
-    }catch(err){
+    } catch (err) {
 
     }
-
-    // .then((res) => {
-    //   return res.json()
-    // })
-    // .then(res => {
-
-    //   if(res.data){
-    //     setState({
-    //       ...state,
-    //       login: res.data
-    //     })
-    //     callback()
-    //   }else if(res.error){
-    //     setState({
-    //       ...state,
-    //       loginError: res.error
-    //     })
-    //   }
-
-    // })
-    // .catch(err => {
-    //   console.log('error', err)
-    // })
-
-    // if(username === 'admin@gmail.com' && password === '123456'){
-    //   setState({
-    //     ...state,
-    //     login: {
-    //       name: 'Đặng Thuyền Vương',
-    //       avatar: '/img/avt.png'
-    //     }
-    //   })
-    // }else{
-    //   return 'Sai thông tin đăng nhập'
-    // }
   }
 
   function handleLogout() {
@@ -105,26 +63,23 @@ function App() {
   }
 
   return (
-    <Context.Provider value={{ ...state, handleLogin, handleLogout }}>
-      <BrowserRouter>
-        <div className="App">
-          <Header />
-          <Nav />
-          <PopupLogin />
-          <Switch>
-            <Route exact path="/" component={Home} />
-            <PrivateRoute path="/" component={Profile} />
-            <Route path="/lien-he" component={Contact} />
-            <Route path="/cau-hoi-thuong-gap" component={FAQ} />
-            <Route path="/khoa-hoc/:slug" component={ChiTietKhoaHoc} />
-            <Route path="/demo" component={CountDown} />
-            <Route component={Page404} />
-          </Switch>
-
-          <Footer />
-        </div>
-      </BrowserRouter>
-    </Context.Provider>
+    <Provider store={store}>
+      <Context.Provider value={{ ...state, handleLogin, handleLogout }}>
+        <BrowserRouter>
+          <MainLayout>
+            <Switch>
+                <Route exact path="/" component={Home} />
+                <PrivateRoute path="/ca-nhan" component={Profile} />
+                <Route path="/lien-he" component={Contact} />
+                <Route path="/cau-hoi-thuong-gap" component={FAQ} />
+                <Route path="/khoa-hoc/:slug" component={ChiTietKhoaHoc} />
+                <Route path="/demo" component={CountDown} />
+                <Route component={Page404} />
+              </Switch>
+          </MainLayout>
+        </BrowserRouter>
+      </Context.Provider>
+    </Provider>
   )
 
 }
